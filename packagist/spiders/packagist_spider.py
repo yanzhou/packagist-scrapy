@@ -120,7 +120,6 @@ class PackagistSpider(scrapy.Spider):
 
         package['versions']['dev-master'] = dev_master
         # yield PackageItem
-        print package
         yield package
 
         # generate request to user profile page
