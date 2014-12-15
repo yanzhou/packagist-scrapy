@@ -30,7 +30,6 @@ class MongoStorePipeline(object):
             self.store_user(item)
         elif isinstance(item, UserStarredPackagesItem):
             self.store_user_starred_packages(item)
-        raise DropItem("item saved successfully")
 
     def store_package_brief(self, item):
         """
