@@ -12,6 +12,9 @@ BOT_NAME = 'packagist'
 
 SPIDER_MODULES = ['packagist.spiders']
 NEWSPIDER_MODULE = 'packagist.spiders'
+ITEM_PIPELINES = {
+    'packagist.pipelines.MongoStorePipeline': 300,
+}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'PackagistScrapy (+http://www.yourdomain.com)'
