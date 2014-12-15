@@ -36,7 +36,11 @@ class MongoStorePipeline(object):
         """
         save brief info of package
         """
-        self.db.packages.insert(dict(item))
+        conditions = {
+            'vendor': item['vendor'],
+            'name': item['name']
+        }
+        self.db.packages.update(conditions, dict(item), True)
 
     def store_package(self, item):
         """
@@ -46,13 +50,16 @@ class MongoStorePipeline(object):
             'vendor': item['vendor'],
             'name': item['name']
         }
-        self.db.packages.update(conditions, dict(item))
+        self.db.packages.update(conditions, dict(item), True)
 
     def store_user(self, item):
         """
         save user info
         """
-        self.db.users.insert(dict(item))
+        conditions = {
+            'username': item['username']
+        }
+        self.db.users.update(conditions, dict(item), True)
 
     def store_user_starred_packages(self, item):
         """
@@ -61,4 +68,4 @@ class MongoStorePipeline(object):
         conditions = {
             'username': item['username']
         }
-        self.db.packages.update(conditions, dict(item))
+        self.db.users.update(conditions, dict(item), True)
