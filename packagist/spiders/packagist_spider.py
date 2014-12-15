@@ -102,7 +102,7 @@ class PackagistSpider(scrapy.Spider):
             require = {
                 'vendor': r.xpath('a/@href').extract()[0].split('/')[2],
                 'name': r.xpath('a/@href').extract()[0].split('/')[3],
-                'version': r.xpath('a/text()').extract()[0].replace(': ', '')
+                'version': r.xpath('./text()').extract()[0].replace(': ', '')
             }
             dev_master['requires'].append(require)
         # requires-dev, only parse packages that hold on packagist.org, i.e. those which have links
@@ -113,13 +113,14 @@ class PackagistSpider(scrapy.Spider):
             require_dev = {
                 'vendor': r.xpath('a/@href').extract()[0].split('/')[2],
                 'name': r.xpath('a/@href').extract()[0].split('/')[3],
-                'version': r.xpath('a/text()').extract()[0].replace(': ', '')
+                'version': r.xpath('./text()').extract()[0].replace(': ', '')
             }
             dev_master['requires-dev'].append(require_dev)
         # TODO parse suggests, provides conflicts and replaces
 
         package['versions']['dev-master'] = dev_master
         # yield PackageItem
+        print package
         yield package
 
         # generate request to user profile page
