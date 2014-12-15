@@ -20,6 +20,8 @@ class PackageItem(scrapy.Item):
     tags = scrapy.Field()
     # downloads info, including number of installs of overall, 30-days and today
     downloads = scrapy.Field()
+    # number of stars
+    stars = scrapy.Field()
     # description
     description = scrapy.Field()
     # details info, including urls of maintainers, homepage, canonical, source, issues, IRC and so on
@@ -31,6 +33,20 @@ class PackageItem(scrapy.Item):
     versions = scrapy.Field()
 
 
+class PackageBriefItem(scrapy.Item):
+    """
+    Brief information of package, used to crawl package info form the list page
+    """
+    # vendor name
+    vendor = scrapy.Field()
+    # package name
+    name = scrapy.Field()
+    # downloads info, including number of installs of overall, 30-days and today
+    downloads = scrapy.Field()
+    # number of stars
+    stars = scrapy.Field()
+
+
 class UserItem(scrapy.Item):
     """
     User information
@@ -39,12 +55,15 @@ class UserItem(scrapy.Item):
     username = scrapy.Field()
     # register date
     register_date = scrapy.Field()
-    # packages maintained or created by the user
-    # type: dict, "vendor-name/package-name" as the key
-    # including the number of total downloads and stars
-    packages = scrapy.Field()
+
+
+class UserStarredPackagesItem(scrapy.Item):
+    """
+    packages which have been starred by user
+    """
+    # username
+    username = scrapy.Field()
     # packages that user stars
     # url sample: https://packagist.org/users/Seldaek/favorites/
-    # type: dict, "vendor-name/package-name" as the key
-    # including the number of total downloads and stars
-    favorites = scrapy.Field()
+    # type: dict, 'vendor', 'name'
+    starred = scrapy.Field()
