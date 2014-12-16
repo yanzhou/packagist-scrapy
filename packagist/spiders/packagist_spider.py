@@ -50,9 +50,9 @@ class PackagistSpider(scrapy.Spider):
 
         # parse the downloads info
         package['downloads'] = {
-            'overall': int(response.xpath('//p[@class="downloads"]/text()[2]').extract()[0].replace('installs', '').replace(' ', '')),
-            '30days': int(response.xpath('//p[@class="downloads"]/text()[4]').extract()[0].replace('installs', '').replace(' ', '')),
-            'today': int(response.xpath('//p[@class="downloads"]/text()[6]').extract()[0].replace('installs', '').replace(' ', ''))
+            'overall': int(response.xpath('//p[@class="downloads"]/text()[2]').extract()[0].replace('installs', '').replace('install', '').replace(' ', '')),
+            '30days': int(response.xpath('//p[@class="downloads"]/text()[4]').extract()[0].replace('installs', '').replace('install', '').replace(' ', '')),
+            'today': int(response.xpath('//p[@class="downloads"]/text()[6]').extract()[0].replace('installs', '').replace('install', '').replace(' ', ''))
         }
         description = response.xpath('//p[@class="description"]/text()').extract()
         if description:
