@@ -1,5 +1,5 @@
 import scrapy
-from packagist.items import PackageItem, PackageBriefItem, UserItem, UserStarredPackagesItem
+from packagist.items import PackageItem
 from scrapy.selector import Selector
 
 
@@ -12,16 +12,6 @@ class PackagistSpider(scrapy.Spider):
         """
         parse the list page
         """
-        # brief info of packages
-        packages = response.xpath('//ul[@class="packages"]/li')
-        for p in packages:
-            package_brief = PackageBriefItem()
-            package_brief['vendor'] = p.xpath('h1/a/text()').extract()[0].split('/')[0]
-            package_brief['name'] = p.xpath('h1/a/text()').extract()[0].split('/')[1]
-            package_brief['downloads'] = {'overall': int(p.xpath('span/text()[2]').extract()[0].replace(' ', ''))}
-            package_brief['stars'] = int(p.xpath('span/text()[3]').extract()[0].replace(' ', ''))
-            yield package_brief
-
         # current page
         current_page = int(response.xpath('//nav/span[@class="current"]/text()').extract()[0])
         # text of the last a link of nav tag, if it is not the last page, then the last a link of nav tag is next page,
@@ -124,48 +114,3 @@ class PackagistSpider(scrapy.Spider):
         package['versions']['dev-master'] = dev_master
         # yield PackageItem
         yield package
-
-        # generate request to user profile page
-        for user in package['details']['maintainers']:
-            url = 'https://packagist.org' + user['url']
-            yield scrapy.Request(url, callback=self.parse_user)
-
-    def parse_user(self, response):
-        """
-        user information
-        """
-        user = UserItem()
-        # html page of the response for later processing in case error occurs
-        user['html'] = response.body
-        user['username'] = response.xpath('//div[@class="box clearfix"]/h1/text()').extract()[0]
-        user['register_date'] = response.xpath('//div[@class="box clearfix"]/p/text()').extract()[0].replace('Member since ', '').replace('\n', '')
-        # yield UserItem
-        yield user
-
-        # generate request to crawl packages which have been starred by the user
-        url = response.url + '/favorites/?page=1'
-        yield scrapy.Request(url, callback=self.parse_user_starred_packages)
-
-    def parse_user_starred_packages(self, response):
-        """
-        parse the list of packages which have been starred by the user
-        the detail info of packages wouldn't be parsed
-        """
-        # brief info of packages
-        packages = response.xpath('//ul[@class="packages"]/li')
-        for p in packages:
-            use_starred_packages = UserStarredPackagesItem()
-            use_starred_packages['username'] = response.url.split('/')[-3]
-            use_starred_packages['vendor'] = p.xpath('h1/a/text()').extract()[0].split('/')[0]
-            use_starred_packages['name'] = p.xpath('h1/a/text()').extract()[0].split('/')[1]
-            yield use_starred_packages
-
-        # current page
-        current_page = int(response.xpath('//nav/span[@class="current"]/text()').extract()[0])
-        # text of the last a link of nav tag, if it is not the last page, then the last a link of nav tag is next page,
-        # or it is previous page
-        next_page = int(response.xpath('//nav/a[last()]/@href').extract()[0].split('=')[1])
-        if current_page < next_page:
-            url = 'https://packagist.org/users' + response.url.split('/')[-3] + '?page=' + str(next_page)
-            # generate request to download list pages
-            yield scrapy.Request(url, callback=self.parse_user_starred_packages)
