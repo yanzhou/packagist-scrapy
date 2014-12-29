@@ -86,7 +86,8 @@ class PackagistSpider(scrapy.Spider):
         # TODO parse more versions
         package['versions'] = {}
         dev_master = {}
-        versions = response.xpath('//li[@class="version"]')
+
+        versions = response.xpath('//ul[@class="versions"]/li')
         dev_master['version'] = versions.xpath('section/h1/a/text()').extract()[0].replace('\n', '').replace(' ', '')
         dev_master['source-reference'] = versions.xpath('section/h1/span[@class="source-reference"]/text()').extract()[0].replace('reference: ', '')
         dev_master['release-date'] = versions.xpath('section/h1/span[@class="release-date"]/text()').extract()[0]
