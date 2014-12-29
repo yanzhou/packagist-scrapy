@@ -46,8 +46,8 @@ class PackagistSpider(scrapy.Spider):
         package = PackageItem()
         # html page of the response for later processing in case error occurs
         package['html'] = response.body
-        package['vendor'] = response.url.split('/')[-1]
-        package['name'] = response.url.split('/')[-2]
+        package['vendor'] = response.url.split('/')[-2]
+        package['name'] = response.url.split('/')[-1]
         package['tags'] = response.xpath('//p[@class="tags"]/a/text()').extract()
 
         # parse the downloads info
