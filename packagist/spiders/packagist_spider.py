@@ -156,9 +156,8 @@ class PackagistSpider(scrapy.Spider):
         for p in packages:
             use_starred_packages = UserStarredPackagesItem()
             use_starred_packages['username'] = response.url.split('/')[-3]
-            use_starred_packages['starred'] = {}
-            use_starred_packages['starred']['vendor'] = p.xpath('h1/a/text()').extract()[0].split('/')[0]
-            use_starred_packages['starred']['name'] = p.xpath('h1/a/text()').extract()[0].split('/')[1]
+            use_starred_packages['vendor'] = p.xpath('h1/a/text()').extract()[0].split('/')[0]
+            use_starred_packages['name'] = p.xpath('h1/a/text()').extract()[0].split('/')[1]
             yield use_starred_packages
 
         # current page

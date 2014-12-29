@@ -64,7 +64,4 @@ class MongoStorePipeline(object):
         """
         save packages which have been starred by user
         """
-        conditions = {
-            'username': item['username']
-        }
-        self.db.users.update(conditions, dict(item), True)
+        self.db.favourites.insert(dict(item))

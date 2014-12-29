@@ -69,5 +69,7 @@ class UserStarredPackagesItem(scrapy.Item):
     username = scrapy.Field()
     # packages that user stars
     # url sample: https://packagist.org/users/Seldaek/favorites/
-    # type: dict, 'vendor', 'name'
-    starred = scrapy.Field()
+    # package vendor
+    vendor = scrapy.Field()
+    # package name
+    name = scrapy.Field()
