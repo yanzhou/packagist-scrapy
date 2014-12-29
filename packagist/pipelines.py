@@ -6,7 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 from scrapy.exceptions import DropItem
-from packagist.items import PackageItem, PackageBriefItem, UserItem, UserStarredPackagesItem
+from packagist.items import PackageItem
 from pymongo import MongoClient
 
 
