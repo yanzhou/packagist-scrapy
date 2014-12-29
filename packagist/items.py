@@ -12,6 +12,8 @@ class PackageItem(scrapy.Item):
     """
     Package information
     """
+    # html of package detail page for later processing in case error occurs
+    html = scrapy.Field()
     # vendor name
     vendor = scrapy.Field()
     # package name
@@ -51,6 +53,8 @@ class UserItem(scrapy.Item):
     """
     User information
     """
+    # html of user detail page for later processing in case error occurs
+    html = scrapy.Field()
     # username
     username = scrapy.Field()
     # register date

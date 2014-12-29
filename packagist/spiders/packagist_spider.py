@@ -44,6 +44,8 @@ class PackagistSpider(scrapy.Spider):
         parse the detail page
         """
         package = PackageItem()
+        # html page of the response for later processing in case error occurs
+        package['html'] = response.body
         package['vendor'] = response.url.split('/')[-1]
         package['name'] = response.url.split('/')[-2]
         package['tags'] = response.xpath('//p[@class="tags"]/a/text()').extract()
@@ -133,6 +135,8 @@ class PackagistSpider(scrapy.Spider):
         user information
         """
         user = UserItem()
+        # html page of the response for later processing in case error occurs
+        user['html'] = response.body
         user['username'] = response.xpath('//div[@class="box clearfix"]/h1/text()').extract()[0]
         user['register_date'] = response.xpath('//div[@class="box clearfix"]/p/text()').extract()[0].replace('Member since ', '').replace('\n', '')
         # yield UserItem
