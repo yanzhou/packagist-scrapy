@@ -74,43 +74,44 @@ class PackagistSpider(scrapy.Spider):
                 }
                 package['details'][key].append(detail)
 
-        # parse the versions info, now only parse the dev-master version
-        # TODO parse more versions
-        package['versions'] = {}
-        dev_master = {}
-
         versions = response.xpath('//ul[@class="versions"]/li')
-        dev_master['version'] = versions.xpath('section/h1/a/text()').extract()[0].replace('\n', '').replace(' ', '')
-        dev_master['source-reference'] = versions.xpath('section/h1/span[@class="source-reference"]/text()').extract()[0].replace('reference: ', '')
-        dev_master['release-date'] = versions.xpath('section/h1/span[@class="release-date"]/text()').extract()[0]
-        licence = versions.xpath('section/h1/span[@class="license"]/text()').extract()
-        if licence:
-            dev_master['license'] = versions.xpath('section/h1/span[@class="license"]/text()').extract()[0]
-        # TODO parse authors
-        # requires, only parse packages that hold on packagist.org, i.e. those which have links
-        # TODO parse packages which have no links
-        dev_master['requires'] = []
-        requires = versions.xpath('section//div[@class="requires"]/ul/li[a]')
-        for r in requires:
-            require = {
-                'vendor': r.xpath('a/@href').extract()[0].split('/')[2],
-                'name': r.xpath('a/@href').extract()[0].split('/')[3],
-                'version': r.xpath('./text()').extract()[0].replace(': ', '')
-            }
-            dev_master['requires'].append(require)
-        # requires-dev, only parse packages that hold on packagist.org, i.e. those which have links
-        # TODO parse packages which have no links
-        dev_master['requires-dev'] = []
-        requires_dev = versions.xpath('section//div[@class="devRequires"]/ul/li[a]')
-        for r in requires_dev:
-            require_dev = {
-                'vendor': r.xpath('a/@href').extract()[0].split('/')[2],
-                'name': r.xpath('a/@href').extract()[0].split('/')[3],
-                'version': r.xpath('./text()').extract()[0].replace(': ', '')
-            }
-            dev_master['requires-dev'].append(require_dev)
-        # TODO parse suggests, provides conflicts and replaces
+        # if there is at least one version
+        if versions.extract():
+            # parse the versions info, now only parse the latest version
+            # TODO parse more versions
+            package['versions'] = {}
+            latest_version = {}
+            latest_version['version'] = versions.xpath('section/h1/a/text()').extract()[0].replace('\n', '').replace(' ', '')
+            latest_version['source-reference'] = versions.xpath('section/h1/span[@class="source-reference"]/text()').extract()[0].replace('reference: ', '')
+            latest_version['release-date'] = versions.xpath('section/h1/span[@class="release-date"]/text()').extract()[0]
+            licence = versions.xpath('section/h1/span[@class="license"]/text()').extract()
+            if licence:
+                latest_version['license'] = versions.xpath('section/h1/span[@class="license"]/text()').extract()[0]
+            # TODO parse authors
+            # requires, only parse packages that hold on packagist.org, i.e. those which have links
+            # TODO parse packages which have no links
+            latest_version['requires'] = []
+            requires = versions.xpath('section//div[@class="requires"]/ul/li[a]')
+            for r in requires:
+                require = {
+                    'vendor': r.xpath('a/@href').extract()[0].split('/')[2],
+                    'name': r.xpath('a/@href').extract()[0].split('/')[3],
+                    'version': r.xpath('./text()').extract()[0].replace(': ', '')
+                }
+                latest_version['requires'].append(require)
+            # requires-dev, only parse packages that hold on packagist.org, i.e. those which have links
+            # TODO parse packages which have no links
+            latest_version['requires-dev'] = []
+            requires_dev = versions.xpath('section//div[@class="devRequires"]/ul/li[a]')
+            for r in requires_dev:
+                require_dev = {
+                    'vendor': r.xpath('a/@href').extract()[0].split('/')[2],
+                    'name': r.xpath('a/@href').extract()[0].split('/')[3],
+                    'version': r.xpath('./text()').extract()[0].replace(': ', '')
+                }
+                latest_version['requires-dev'].append(require_dev)
+            # TODO parse suggests, provides conflicts and replaces
 
-        package['versions']['dev-master'] = dev_master
+            package['versions']['latest'] = latest_version
         # yield PackageItem
         yield package
