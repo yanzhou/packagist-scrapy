@@ -67,7 +67,8 @@ class PackagistSpider(scrapy.Spider):
                 # list, one kind of detail can have multi values, each of which is in the form of {'url': '', 'content': ''}
                 package['details'][key] = []
             # if the tag is a, i.e. the detail info
-            if d.xpath('//a').extract():
+            # if the a tag has href attr and content, some <a> tags of details have no href or text
+            if d.xpath('//a/@href').extract() and d.xpath('//a/text()').extract():
                 detail = {
                     'url': d.xpath('//a/@href').extract()[0],
                     'content': d.xpath('//a/text()').extract()[0]
